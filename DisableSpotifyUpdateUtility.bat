@@ -14,7 +14,6 @@ if %errorLevel% neq 0 (
     exit /b
 )
 
-set "spotifyBase=%localappdata%\Spotify"
 set "updateFolder=%localappdata%\Spotify\Update"
 set "regKey1=HKLM\SOFTWARE\Policies\Spotify"
 set "regKey2=HKLM\SOFTWARE\WOW6432Node\Policies\Spotify"
@@ -67,11 +66,6 @@ if not exist "%updateFolder%" (
 icacls "%updateFolder%" /deny "%username%":(OI)(CI)(DE,WD,AD,WA) /q
 icacls "%updateFolder%" /deny "SYSTEM":(OI)(CI)(DE,WD,AD,WA) /q
 
-:: Also deny write/create-child on the PARENT Spotify folder so Spotify
-:: cannot delete and recreate the Update folder from scratch
-icacls "%spotifyBase%" /deny "%username%":(AD) /q
-icacls "%spotifyBase%" /deny "SYSTEM":(AD) /q
-
 echo  [3/4] Adding Registry policies...
 
 :: Standard 64-bit hive
@@ -106,12 +100,6 @@ if exist "%updateFolder%" (
     echo   Update folder permissions reset.
 ) else (
     echo   Update folder not found - skipping folder reset.
-)
-
-:: Also reset the parent Spotify folder deny we added during lock
-if exist "%spotifyBase%" (
-    icacls "%spotifyBase%" /reset /q >nul 2>&1
-    echo   Spotify base folder permissions reset.
 )
 
 echo  [2/3] Removing Registry policies...
