@@ -14,8 +14,8 @@ set "updateFolder=%localappdata%\Spotify\Update"
 set "regKey1=HKLM\SOFTWARE\Policies\Spotify"
 set "regKey2=HKLM\SOFTWARE\WOW6432Node\Policies\Spotify"
 
-echo 1. Lock Spotify Updates (Kill Spotify + Reset Folder + Lock + Registry)
-echo 2. Unlock Spotify Updates (Reset Permissions + Delete Registry)
+echo 1. Lock Spotify Updates (Close Spotify + Disable Update Folder + Registry)
+echo 2. Unlock Spotify Updates (Revert Changes)
 set /p choice="Choose an option (1 or 2): "
 
 if "%choice%"=="1" (
@@ -39,7 +39,7 @@ if "%choice%"=="1" (
     reg add "%regKey2%" /v "DisableAutomaticUpdate" /t REG_DWORD /d 1 /f
     
     echo.
-    echo Status: Spotify killed, folder LOCKED, and Registry Policies added.
+    echo Status: Spotify killed, Update LOCKED, and Registry Policies added.
 ) else if "%choice%"=="2" (
     :: 1. Reset Spotify folder back to default
     icacls "%updateFolder%" /reset /t
@@ -49,7 +49,7 @@ if "%choice%"=="1" (
     reg delete "%regKey2%" /f >nul 2>&1
     
     echo.
-    echo Status: Spotify Updates UNLOCKED. Permissions reset and Registry Policies removed.
+    echo Status: Spotify Updates UNLOCKED. Permissions reset and Registry Policies removed (changes reverted).
 ) else (
     echo.
     echo Invalid choice.
